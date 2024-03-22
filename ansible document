@@ -1,0 +1,264 @@
+Install pip: Start by updating the package list -  $ sudo apt update
+Install pip for python 3 - $ sudo apt install python3-pip
+Installation is complete, Verify pip version -  $ pip3 –version
+Check pip for python 3 - $ python3 -m pip -V
+Install ansible - $ sudo apt install ansible
+$ python3 -m pip install --user ansible
+$ python3 -m pip install --user ansible-core
+$ python3 -m pip install --upgrade --user ansible
+Install ansible - $ sudo apt install ansible
+Check ansible version - $ ansible –version
+Install ansible collection galaxy - $ ansible-galaxy collection install azure.azcollection
+$ ansible-galaxy collection install azure.azcollection --force
+$ pip3 install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements-azure.txt
+
+$   ansible all -m ping
+$ ansible <host name> -m ping
+ansibleuser@ansibleserver:~/ashish$ ansible localhost -m ping
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+# vi inventory.yml
+[win]
+172.210.8.134
+
+[win:vars]
+ansible_user=ansibleuser
+ansible_password=Password@123
+ansible_port=5985
+ansible_connection=winrm
+ansible_winrm_transport=basic
+ansible_winrm_server_cert_validation=ignore
+
+Check:
+ansibleuser@ansibleserver:~/ashish$ ansible all -m win_ping -i hosts
+172.210.8.134 | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
+-------------------------------------------------------------------------------------------------------------------------------------
+Create a playbook:
+# vi (Single space) <playbook name>
+# vi MyPlaybook.yml
+Run the Playbook:
+# ansible-playbook <playbook name>
+# ansible-playbook -I 23.102.20.240(Public IP of VM),
+Adding a comma after Public IP- It would by pass the ansible inventory parser Which allows us to run playbook without any inventory file.
+
+
+Gather Facts:
+gather_facts: true   - Ansible will collect information about the managed host, such as OS details, IP Address, available memory, and other relevant facts.
+gather_facts: false   - Ansible skips the facts-gathering process. Useful in improving the performance of the playbook which does not rely on the host facts.
+----------------------------------------------------------------------------------------------------------------------------------------
+timezone module:
+this module is a part of community.general collection.
+To install it, use: ansible-galaxy collection install community.general.
+To use it in a playbook, specify: community.general.timezone.
+Requirement:
+Ansible controller 
+Administrative permissions on the target machine.
+Remote Machine on server where wants to change timezone.
+------------------------------------------------------------------------------------------------------------------------------------------
+NTP(Network Time Protocol):
+We can create an ansible role for NTP configurations. 
+•	Create the role directory i.e. ntp_role
+Ansible-galaxy init ntp_role
+•	Edit the role Task. (basically add the task for NTP configuration)
+•	Install NTP Package
+•	Configure NTP Package
+•	Start NTP Service
+•	Enable NTP Service
+•	Create the role Templates.
+•	Edit the Role Handlers.
+•	Include the Role in the Playbook. (Run the Playbook)
+What is, why needed.
+NTP (Network Time Protocol) Role in ansible:
+The NTP role in Ansible is used to synchronize the system clock of a remote machine with the clock of an NTP server. 
+Why NTP is Needed:
+This is important because the system clock is used by many applications and services, and if it is not synchronized, it can cause issues such as incorrect timestamps on log files, incorrect time-stamps on emails, and other time-related issues.
+The NTP role is used to install and configure the NTP daemon on a remote machine. 
+It can be used:
+to manage the NTP configuration file, set the timezone for the server, and specify the NTP servers to use. 
+The NTP role is available on GitHub and can be installed using the ansible-galaxy command.
+How will you be parameterizing for timezone module?
+------------------------------------------------------------------------------------------------------------------------------------------
+MSI (Microsoft Software installer) Installation: 
+Installs or uninstalls a Windows MSI file that is already located on the target server.
+Removed in Ansible: version: 2.8
+Why: The win_msi module has a number of issues, the win_package module is easier to maintain and use.
+Alternative: Use win_package instead.
+It is a windows installer format that uses Microsoft’s windows installer service to configure installer packages, such as windows applications, or update packages.
+To install Notepad++ on a Windows VM using Ansible, Can use the win_package/win_mis module provided by Ansible. 
+win_package/win_mis module can install or uninstall software packages for Windows, including .exe, .msi, .msp, .appx, .appxbundle, .msix, and .msixbundle.
+To install MSI on Windows VM
+•	Download MSI Installer
+•	Install MSI Package
+------------------------------------------------------------------------------------------------------------------------------------------
+Windows firewall profile win_firewall_rule:
+To use it in a playbook, specify: community.windows.win_firewall_rule.( Enable or disable the Windows Firewall)
+Win_firewall module is used to create to create/remove/update firewall rules.
+The win_firewall module in Ansible is used to enable or disable the Windows Firewall. It is part of the community.windows collection and requires Windows Management Framework 5 or later. This module can be used to set the state of firewall profiles, such as enabling or disabling inbound and outbound network traffic.
+It can be used to ensure that the running and written configurations of the firewall are in the desired state.
+Windows Firewall is a security feature that filters network traffic that enters and exits your device. It defends against unauthorized traffic at the protocols and applications layer of the OSI Model. Windows Firewall rules are neither Ethernet nor Wi-Fi adapter-dependent.
+
+Domain Profile:
+Applied when computer is connected to a Domain.
+Configured for networks where the computer is a member of Windows Domain, Such as in a corporate or enterprise.
+Private Profile:
+Applied when the computer is connected to a private network.
+Public profile:
+Applied when the computer is connected to a public network.
+------------------------------------------------------------------------------------------------------------------------------------------
+Windows Defender Firewall:
+Windows Defender Firewall is firewall software developed by Microsoft to protect computers running the Windows operating system. The software permits or denies programs on a computer from accessing network or Internet resources. It also allows or blocks connections to and from other computers on a network. Windows Defender Firewall works to protect the operating system and user data on the computer.
+(It like a security guard standing at the door, checking the ID of everything that tries to enter or exit.)
+1.	Select Start, then open Settings   Under Privacy & security   select Windows Security   Firewall & network protection. 
+2.	Select a network profile: Domain network, Private network, or public network.
+3.	Under Microsoft Defender Firewall, switch the setting to On. If your device is connected to a network, network policy settings might prevent you from completing these steps. For more info, contact your administrator.
+4.	To turn it off, switch the setting to Off. Turning off Microsoft Defender Firewall could make your device more vulnerable to unauthorized access.
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+ansible. windows win updates module:
+Searches, downloads, and installs Windows updates synchronously by automating the Windows Update client.
+To Enable WUA service again, once it is turned off:
+•	Open Services:
+Press ‘win + r’
+Type ‘services.msc’
+•	Fine Windows Update Service(‘wuauserv’)
+‘windows update’
+•	Right-click on ‘windows update’ 
+Select ‘properties’.
+In the ‘general’ tab click on the ‘service status.’
+‘Start’ button to manually start
+•	‘Properties’ ‘start type’ dropdown -> ‘automatic’
+•	‘Apply’ then ‘Ok’
+------------------------------------------------------------------------------------------------------------------------------------------
+Variables:
+Defining variables in a play:
+We can define variables directly in a playbook play:
+- hosts: webservers
+  vars:
+    http_port: 80
+When we define variables in a play, they are only visible to tasks executed in that play.
+Defining variables in included files and roles:
+You can define variables in reusable variables files and/or in reusable roles. When you define variables in reusable variable files, the sensitive variables are separated from playbooks.
+Include variables defined in an external file:
+---
+
+- hosts: all
+  remote_user: root
+  vars:
+    favcolor: blue
+  vars_files:
+    - /vars/external_vars.yml
+
+  tasks:
+
+  - name: This is just a placeholder
+    ansible.builtin.command: /bin/echo foo
+The contents of each variables file is a simple YAML dictionary. For example:
+
+---
+# in the above example, this would be vars/external_vars.yml
+somevar: somevalue
+password: magic
+
+Ansible Package Module: 
+This module manages packages on a target without specifying a package manager module (like ansible.builtin.yum, ansible.builtin.apt, …etc.) 
+•	For Linux targets, use the ansible.builtin.package module.
+•	For Windows targets, use the ansible.windows.win_package module instead.  
+Required parameters Name, State, Use.
+
+Ansible Win_Package Module: 
+•	Installs or uninstalls software packages for Windows.
+•	Supports .exe, .msi, .msp, .appx,. appxbundle, .msix, and .msixbundle.
+•	These packages can be sourced from the local file system, network file share or a URL.
+To use it in a playbook, specify: ansible.windows.win_package.
+Parameters: Path, Product ID, Arguments, State, log_path, 
+Arguments:
+/install – indicates that the installation action should be performed.
+/passive – the argument specifies the passive installation, meaning that the installer will display a progress bar.
+/norestart – the argument instructs the installer not to automatically restart the system after installation is completed.
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Ansible Copy Module: 
+The ansible.builtin.copy module copies a file or a directory structure from the local or remote machine to a location on the remote machine.
+•	Get meta-information with the ansible.builtin.stat module.
+•	Set meta-information with the ansible.builtin.file module.
+•	Use the ansible.builtin.fetch module to copy files from remote locations to the local box.
+•	If you need variable interpolation in copied files, use the ansible.builtin.template module. Using a variable with the content parameter produces unpredictable results.
+Ansible Win_Copy Module: 
+The win_copy module copies a file on the local box to remote windows locations.
+For Windows targets, use the ansible.windows.win_copy module instead.
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Ansible Debug Module: 
+•	This module prints statements during execution and can be useful for debugging variables.
+•	Useful for debugging together with the ‘when:’ directive.
+•	This module is also supported for Windows targets.
+•	ansible.builtin.debug module – Print statements during execution.
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Ansible Service Module: 
+•	Controls services on remote hosts. Supported init systems include BSD init, OpenRC, SysV, Solaris SMF, systemd, upstart.
+•	This module acts as a proxy to the underlying service manager module. While all arguments will be passed to the underlying module, not all modules support the same arguments. 
+Parameters: Name, Enabled(service), State.
+
+Ansible Win_Service Module: 
+Manage and query Windows services.
+For Windows targets, use the ansible.windows.win_service module instead.
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Ansible Set_Fact Module: 
+The ansible set_fact module allow us to add flexibility on our playbook based on the information gathered from the hosts.
+•	This action allows setting variables associated to the current host.
+•	Set_fact var are host-to-host based and are available for subsequent ansible playbook runs.
+•	These variables will be available to subsequent plays during an ansible-playbook run via the host.
+Parameters:
+Cacheable – the Boolean para. Has to options: yes and no. 
+Key_value – Variable set using the set_fact module use the “key=value” or “key:value” 
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Arguments:
+/install – indicates that the installation action should be performed.
+Purpose: 
+•	Specifies whether to install or uninstall the software package.
+Values: 
+•	Present – Install the software package.
+•	Absent – Uninstall the software package.
+
+/passive – the argument specifies the passive installation, meaning that the installer will display a progress bar.
+Purpose:
+•	It shows the installation wizard(Graphical User Interface tool designed to guide users through the process of installing software on a computer) but does not require user interaction.
+Values:
+•	‘yes’ or ‘true’: Perform a passive installation.
+•	‘no’ or ‘false’: Perform a regular installation (may require user interaction.)
+
+/norestart – the argument instructs the installer not to automatically restart the system after installation is completed.
+Values:
+•	‘yes’ or ‘true’: instructs the installer not to automatically restart the system.
+•	‘no’ or ‘false’: Allow system restart if required by the installation.
+
+In Ansible apt, yum and dnf are package management modules that allows to manage software packages on Debian-based (apt), Red Hat-based (yum) and newer Red Hat-based (dnf).
+Apt Module:
+•	Purpose: Manages packages on Debian-based system (Ubuntu).
+Yum Module:
+•	Purpose: Manages packages on Red Hat-based system (CentOS).
+Dnf Module:
+•	Purpose: Manages packages on newer Red Hat-based system (Fedora, RHEL).
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Automatic variables represent the system information.
+local_ip = {{ ansible_host }}
+Path = {{ template_path }}
+These values is comes from the system information gathered by Ansible. For example, ‘ansible_default_ipv4.address’.
+------------------------------------------------------------------------------------------------------------------------------------------
+
