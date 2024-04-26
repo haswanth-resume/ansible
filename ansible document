@@ -98,7 +98,9 @@ To install MSI on Windows VM
 Windows firewall profile win_firewall_rule:
 To use it in a playbook, specify: community.windows.win_firewall_rule.( Enable or disable the Windows Firewall)
 Win_firewall module is used to create to create/remove/update firewall rules.
-The win_firewall module in Ansible is used to enable or disable the Windows Firewall. It is part of the community.windows collection and requires Windows Management Framework 5 or later. This module can be used to set the state of firewall profiles, such as enabling or disabling inbound and outbound network traffic.
+The win_firewall module in Ansible is used to enable or disable the Windows Firewall. It is part of the community.
+windows collection and requires Windows Management Framework 5 or later. 
+This module can be used to set the state of firewall profiles, such as enabling or disabling inbound and outbound network traffic.
 It can be used to ensure that the running and written configurations of the firewall are in the desired state.
 Windows Firewall is a security feature that filters network traffic that enters and exits your device. It defends against unauthorized traffic at the protocols and applications layer of the OSI Model. Windows Firewall rules are neither Ethernet nor Wi-Fi adapter-dependent.
 
@@ -143,7 +145,8 @@ We can define variables directly in a playbook play:
     http_port: 80
 When we define variables in a play, they are only visible to tasks executed in that play.
 Defining variables in included files and roles:
-You can define variables in reusable variables files and/or in reusable roles. When you define variables in reusable variable files, the sensitive variables are separated from playbooks.
+You can define variables in reusable variables files and/or in reusable roles.
+When you define variables in reusable variable files, the sensitive variables are separated from playbooks.
 Include variables defined in an external file:
 ---
 
